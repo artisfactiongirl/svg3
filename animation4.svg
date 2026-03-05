@@ -1,0 +1,15 @@
+<svg width="250" height="250" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hintergrund für bessere Sichtbarkeit -->
+  <rect x="0" y="0" width="250" height="250" fill="#f0f8ff"/>
+
+  <!-- Der zufällig hüpfende Ball -->
+  <circle r="12" fill="coral">
+    <animateMotion
+      path="M 30 30 L 220 180 L 80 220 L 20 100 L 200 30 L 120 190 L 30 150 Z"
+      dur="0.7s"
+      repeatCount="indefinite"
+      calcMode="linear"
+    />
+  </circle>
+</svg>
+

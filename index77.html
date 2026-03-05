@@ -1,0 +1,195 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated SVG Collection</title>
+    <style>
+        :root {
+            --neon-blue: #0ff0fc;
+            --neon-pink: #ff00ff;
+            --dark-bg: #0a0a12;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 2rem;
+            border-bottom: 1px solid var(--neon-blue);
+            position: relative;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent, var(--neon-blue) 150%);
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-pink);
+            animation: pulse 3s infinite alternate;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+        }
+        
+        .svg-item {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 0 15px rgba(0, 255, 252, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .svg-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 255, 252, 0.5);
+        }
+        
+        .svg-container {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 0.5rem;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        button {
+            background: transparent;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: var(--neon-blue);
+            color: var(--dark-bg);
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(0, 255, 252, 0.03) 1px,
+                transparent 1px
+            );
+            background-size: 100% 3px;
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    
+    <header class="header">
+        <h1>Animated SVG Collection</h1>
+        <p>Interactive showcase of dynamic vector graphics</p>
+    </header>
+    
+    <div class="container" id="svgGrid">
+        <!-- Initial SVG loaded directly -->
+        <div class="svg-item">
+            <div class="svg-container">
+                <svg id="initialSVG" width="150" height="150" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="100" cy="100" r="50" fill="none" stroke="#0ff0fc" stroke-width="4">
+                        <animate attributeName="r" values="50;70;50" dur="3s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="100" cy="100" r="30" fill="none" stroke="#ff00ff" stroke-width="4">
+                        <animate attributeName="r" values="30;10;30" dur="3s" repeatCount="indefinite" />
+                    </circle>
+                </svg>
+            </div>
+            <div class="controls">
+                <button onclick="animateSVG('initialSVG')">Animate</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const svgCount = 10; // Number of SVG files to load
+        const container = document.getElementById('svgGrid');
+        
+        // Load external SVGs
+        for (let i = 1; i <= svgCount; i++) {
+            const svgItem = document.createElement('div');
+            svgItem.className = 'svg-item';
+            svgItem.innerHTML = `
+                <div class="svg-container">
+                    <object id="svg${i}" type="image/svg+xml" data="animation${i}.svg"></object>
+                </div>
+                <div class="controls">
+                    <button onclick="animateSVG('svg${i}')">Animate</button>
+                    <button onclick="reloadSVG('svg${i}')">Reload</button>
+                </div>
+            `;
+            container.appendChild(svgItem);
+        }
+        
+        function animateSVG(id) {
+            const svgElement = document.getElementById(id);
+            if (svgElement.getSVGDocument) {
+                const svgDoc = svgElement.getSVGDocument();
+                const paths = svgDoc.querySelectorAll('path, circle, rect');
+                paths.forEach((path, index) => {
+                    path.style.transition = 'transform 0.5s ease';
+                    path.style.transform = `scale(${1 + Math.random() * 0.5}) rotate(${Math.random() * 20}deg)`;
+                    setTimeout(() => {
+                        path.style.transform = 'scale(1) rotate(0)';
+                    }, 500 + index * 100);
+                });
+            }
+        }
+        
+        function reloadSVG(id) {
+            const svgElement = document.getElementById(id);
+            const currentSrc = svgElement.getAttribute('data');
+            svgElement.setAttribute('data', currentSrc + '?' + new Date().getTime());
+        }
+    </script>
+</body>
+</html>
+```

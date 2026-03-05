@@ -1,0 +1,24 @@
+<svg width="200" height="200" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .strand {
+      fill: none;
+      stroke: #8b5e3c;
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-dasharray: 20 10;
+      animation: weave 4s infinite linear;
+    }
+    .strand-alt {
+      stroke: #a67c52;
+      animation-direction: reverse;
+    }
+    @keyframes weave {
+      from { stroke-dashoffset: 60; }
+      to { stroke-dashoffset: 0; }
+    }
+  </style>
+  <path class="strand" d="M-10 20 Q 15 10, 40 20 T 90 20 T 140 20" />
+  <path class="strand strand-alt" d="M-10 40 Q 15 30, 40 40 T 90 40 T 140 40" />
+  <path class="strand" d="M-10 60 Q 15 50, 40 60 T 90 60 T 140 60" />
+  <path class="strand strand-alt" d="M-10 80 Q 15 70, 40 80 T 90 80 T 140 80" />
+</svg>
